@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#0c0c0e"/>
+  <!-- Green rounded square -->
+  <rect x="92" y="92" width="328" height="328" rx="82" ry="82" fill="#7cffc4"/>
+  <!-- Letter T -->
+  <text
+    x="256"
+    y="370"
+    text-anchor="middle"
+    font-family="Arial Black, Arial, sans-serif"
+    font-weight="900"
+    font-size="290"
+    fill="#0c0c0e"
+  >T</text>
+</svg>
