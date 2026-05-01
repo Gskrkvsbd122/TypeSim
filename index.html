@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TypeSim — Feel the Speed</title>
+  <meta name="description" content="Simulate any typing speed and measure your own. Visual WPM, CPM, WPS, CPS simulator." />
+  <meta name="theme-color" content="#0f0f0f" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <header class="header">
+    <div class="logo">
+      <span class="logo-mark">T</span>
+      <span class="logo-text">TypeSim</span>
+    </div>
+    <nav class="tabs">
+      <button class="tab active" data-tab="simulate">Simulate</button>
+      <button class="tab" data-tab="type">Type & Measure</button>
+    </nav>
+    <div class="header-right">
+      <span class="badge">PWA Ready</span>
+    </div>
+  </header>
+
+  <!-- ───────────── SIMULATE TAB ───────────── -->
+  <main id="tab-simulate" class="tab-content active">
+    <section class="hero">
+      <h1 class="hero-title">Feel the<br/><em>Speed</em></h1>
+      <p class="hero-sub">Watch text render at any typing speed from 1 to 1000 WPM</p>
+    </section>
+
+    <div class="controls-panel glass">
+      <!-- Speed Unit Selector -->
+      <div class="control-group">
+        <label class="control-label">Speed Unit</label>
+        <div class="unit-selector">
+          <button class="unit-btn active" data-unit="wpm">WPM</button>
+          <button class="unit-btn" data-unit="cpm">CPM</button>
+          <button class="unit-btn" data-unit="wps">WPS</button>
+          <button class="unit-btn" data-unit="cps">CPS</button>
+        </div>
+      </div>
+
+      <!-- Speed Slider -->
+      <div class="control-group speed-group">
+        <label class="control-label">Speed: <span id="speed-display">60</span> <span id="unit-label">WPM</span></label>
+        <div class="slider-wrap">
+          <input type="range" id="speed-slider" min="1" max="1000" value="60" step="1" />
+          <div class="slider-track-fill" id="slider-fill"></div>
+        </div>
+        <div class="speed-presets">
+          <button class="preset" data-speed="30">Beginner<br/><small>30</small></button>
+          <button class="preset" data-speed="60">Average<br/><small>60</small></button>
+          <button class="preset" data-speed="100">Fast<br/><small>100</small></button>
+          <button class="preset" data-speed="200">Pro<br/><small>200</small></button>
+          <button class="preset" data-speed="400">Elite<br/><small>400</small></button>
+          <button class="preset" data-speed="1000">Limit<br/><small>1000</small></button>
+        </div>
+      </div>
+
+      <!-- Text Sample Selector -->
+      <div class="control-group">
+        <label class="control-label">Text Sample</label>
+        <div class="sample-grid">
+          <button class="sample-btn active" data-sample="default">Default</button>
+          <button class="sample-btn" data-sample="poem">Poem</button>
+          <button class="sample-btn" data-sample="essay">Essay</button>
+          <button class="sample-btn" data-sample="story">Story</button>
+          <button class="sample-btn" data-sample="code">Code</button>
+          <button class="sample-btn" data-sample="email">Email</button>
+          <button class="sample-btn" data-sample="letter">Letter</button>
+          <button class="sample-btn" data-sample="custom">Custom ✏️</button>
+        </div>
+        <textarea id="custom-text-input" class="custom-textarea glass" placeholder="Type your custom text here…" style="display:none"></textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-row">
+        <button id="sim-start" class="btn-primary">▶ Start Simulation</button>
+        <button id="sim-stop" class="btn-secondary" disabled>■ Stop</button>
+        <button id="sim-reset" class="btn-ghost">↺ Reset</button>
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-row">
+      <div class="stat-card glass">
+        <span class="stat-label">Current Speed</span>
+        <span class="stat-value" id="sim-current">—</span>
+        <span class="stat-unit" id="sim-current-unit">WPM</span>
+      </div>
+      <div class="stat-card glass highlight">
+        <span class="stat-label">Human Percentile</span>
+        <span class="stat-value" id="sim-percentile">—</span>
+        <span class="stat-unit">% can reach this</span>
+      </div>
+      <div class="stat-card glass">
+        <span class="stat-label">Characters/sec</span>
+        <span class="stat-value" id="sim-cps">—</span>
+        <span class="stat-unit">CPS</span>
+      </div>
+    </div>
+
+    <!-- Simulation Screen -->
+    <div class="sim-screen glass" id="sim-screen">
+      <div class="sim-cursor-wrap">
+        <div id="sim-text-output" class="sim-text"></div>
+        <span class="sim-cursor" id="sim-cursor">|</span>
+      </div>
+      <div class="sim-idle" id="sim-idle">
+        <div class="idle-icon">⌨</div>
+        <p>Configure speed &amp; sample, then hit <strong>Start</strong></p>
+      </div>
+    </div>
+
+    <!-- Speed Context -->
+    <div class="context-bar glass" id="context-bar" style="display:none">
+      <div class="context-text" id="context-text"></div>
+    </div>
+  </main>
+
+  <!-- ───────────── TYPE & MEASURE TAB ───────────── -->
+  <main id="tab-type" class="tab-content">
+    <section class="hero small">
+      <h1 class="hero-title small">Measure Your<br/><em>Fingers</em></h1>
+      <p class="hero-sub">Start typing in the box — see your live speed stats</p>
+    </section>
+
+    <div class="measure-layout">
+      <div class="measure-stats">
+        <div class="live-stat glass">
+          <div class="live-stat-label">Current</div>
+          <div class="live-stat-value" id="live-current">0</div>
+          <div class="live-stat-unit">WPM</div>
+        </div>
+        <div class="live-stat glass accent">
+          <div class="live-stat-label">Average</div>
+          <div class="live-stat-value" id="live-avg">0</div>
+          <div class="live-stat-unit">WPM</div>
+        </div>
+        <div class="live-stat glass">
+          <div class="live-stat-label">Peak</div>
+          <div class="live-stat-value" id="live-max">0</div>
+          <div class="live-stat-unit">WPM</div>
+        </div>
+        <div class="live-stat glass">
+          <div class="live-stat-label">CPM</div>
+          <div class="live-stat-value" id="live-cpm">0</div>
+          <div class="live-stat-unit">chars/min</div>
+        </div>
+        <div class="live-stat glass">
+          <div class="live-stat-label">Chars Typed</div>
+          <div class="live-stat-value" id="live-chars">0</div>
+          <div class="live-stat-unit">total</div>
+        </div>
+        <div class="live-stat glass">
+          <div class="live-stat-label">Time</div>
+          <div class="live-stat-value" id="live-time">0</div>
+          <div class="live-stat-unit">seconds</div>
+        </div>
+      </div>
+
+      <div class="measure-right">
+        <div class="measure-prompt glass" id="measure-prompt">
+          <p>Start typing below to begin measuring…</p>
+        </div>
+        <textarea id="measure-input" class="measure-textarea glass" placeholder="Start typing here… your speed will appear instantly" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+
+        <!-- Speed Graph -->
+        <div class="graph-wrap glass">
+          <div class="graph-label">Speed over time (WPM)</div>
+          <canvas id="speed-graph" height="80"></canvas>
+        </div>
+
+        <div class="measure-review glass" id="measure-review" style="display:none">
+          <div class="review-icon" id="review-icon">🏃</div>
+          <div class="review-text" id="review-text"></div>
+          <div class="review-sub" id="review-sub"></div>
+        </div>
+
+        <button id="measure-reset" class="btn-ghost" style="margin-top:12px">↺ Reset Measurement</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>TypeSim — Built for speed lovers</span>
+    <span class="footer-dot">·</span>
+    <span>Install as PWA for offline use</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
